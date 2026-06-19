@@ -51,7 +51,7 @@ export default function CashFlowChart() {
           <YAxis tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} tickFormatter={(v) => `${v}K`} />
           <Tooltip
             contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: 12 }}
-            formatter={(value: number) => [`Rp ${value.toLocaleString('id-ID')}K`, '']}
+            formatter={(value) => [`Rp ${(value as number).toLocaleString('id-ID')}K`, '']}
           />
           <Legend wrapperStyle={{ fontSize: 12, paddingTop: 16 }} />
           <Line type="monotone" dataKey="income" stroke="#2563EB" strokeWidth={2} dot={false} name="Income" />

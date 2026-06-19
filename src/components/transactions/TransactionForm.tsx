@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { X } from 'lucide-react';
@@ -13,7 +13,7 @@ import type { Transaction } from '@/types';
 
 const schema = z.object({
   type: z.enum(['income', 'expense']),
-  amount: z.coerce.number().positive('Amount must be positive'),
+  amount: z.preprocess((v) => Number(v), z.number().positive('Amount must be positive')),
   category: z.string().min(1, 'Category is required'),
   description: z.string().min(1, 'Description is required'),
   account: z.string().min(1, 'Account is required'),
@@ -42,7 +42,7 @@ export default function TransactionForm({ transaction, onClose }: Props) {
     formState: { errors, isSubmitting },
     reset,
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as Resolver<FormData>,
     defaultValues: {
       type: transaction?.type ?? 'expense',
       amount: transaction?.amount ?? undefined,

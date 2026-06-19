@@ -56,7 +56,7 @@ export default function SpendingDonutChart() {
           </Pie>
           <Tooltip
             contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: 12 }}
-            formatter={(value: number) => [formatCurrency(value), '']}
+            formatter={(value) => [formatCurrency(value as number), '']}
           />
           <Legend
             formatter={(value) => <span style={{ fontSize: 12, color: 'var(--muted-foreground)' }}>{value}</span>}

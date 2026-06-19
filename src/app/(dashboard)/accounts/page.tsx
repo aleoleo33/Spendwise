@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useFinance } from '@/context/FinanceContext';
 import { formatCurrency } from '@/lib/constants';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { Account } from '@/types';
@@ -13,7 +13,7 @@ import { ACCOUNT_COLORS } from '@/lib/constants';
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   type: z.enum(['Bank', 'E-Wallet', 'Cash']),
-  initialBalance: z.coerce.number().min(0),
+  initialBalance: z.preprocess((v) => Number(v), z.number().min(0)),
   color: z.string(),
 });
 type FormData = z.infer<typeof schema>;
@@ -23,7 +23,7 @@ function generateId() { return Math.random().toString(36).substring(2, 11); }
 function AccountForm({ account, onClose }: { account?: Account | null; onClose: () => void }) {
   const { dispatch } = useFinance();
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as Resolver<FormData>,
     defaultValues: {
       name: account?.name ?? '',
       type: account?.type ?? 'Bank',

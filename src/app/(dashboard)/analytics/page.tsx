@@ -63,7 +63,7 @@ export default function AnalyticsPage() {
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
             <XAxis dataKey="label" tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} />
             <YAxis tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} tickFormatter={v => `${v}K`} />
-            <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`Rp ${v.toLocaleString()}K`]} />
+            <Tooltip contentStyle={tooltipStyle} formatter={(v) => [`Rp ${(v as number).toLocaleString()}K`]} />
             <Legend wrapperStyle={{ fontSize: 12, paddingTop: 16 }} />
             <Line type="monotone" dataKey="income" stroke="#2563EB" strokeWidth={2.5} dot={false} name="Income" />
             <Line type="monotone" dataKey="expenses" stroke="#EF4444" strokeWidth={2.5} dot={false} name="Expenses" />
@@ -82,7 +82,7 @@ export default function AnalyticsPage() {
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
               <XAxis dataKey="label" tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} />
               <YAxis tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} tickFormatter={v => `${v}K`} />
-              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`Rp ${v.toLocaleString()}K`]} />
+              <Tooltip contentStyle={tooltipStyle} formatter={(v) => [`Rp ${(v as number).toLocaleString()}K`]} />
               <Legend wrapperStyle={{ fontSize: 12, paddingTop: 16 }} />
               <Bar dataKey="income" fill="#2563EB" name="Income" radius={[4, 4, 0, 0]} />
               <Bar dataKey="expenses" fill="#EF4444" name="Expenses" radius={[4, 4, 0, 0]} />
@@ -101,7 +101,7 @@ export default function AnalyticsPage() {
                   <Cell key={entry.name} fill={CATEGORY_COLORS[entry.name] || '#6B7280'} />
                 ))}
               </Pie>
-              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [formatCurrency(v)]} />
+              <Tooltip contentStyle={tooltipStyle} formatter={(v) => [formatCurrency(v as number)]} />
               <Legend formatter={(v) => <span style={{ fontSize: 12, color: 'var(--muted-foreground)' }}>{v}</span>} />
             </PieChart>
           </ResponsiveContainer>

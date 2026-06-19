@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useFinance } from '@/context/FinanceContext';
 import { formatCurrency, formatDate } from '@/lib/constants';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { SavingsGoal } from '@/types';
@@ -13,8 +13,8 @@ const GOAL_ICONS = ['🏠', '💻', '🚗', '✈️', '📱', '🛡️', '📚',
 
 const schema = z.object({
   name: z.string().min(1),
-  targetAmount: z.coerce.number().positive(),
-  currentAmount: z.coerce.number().min(0),
+  targetAmount: z.preprocess((v) => Number(v), z.number().positive()),
+  currentAmount: z.preprocess((v) => Number(v), z.number().min(0)),
   deadline: z.string().min(1),
   icon: z.string().min(1),
 });
@@ -25,7 +25,7 @@ function generateId() { return Math.random().toString(36).substring(2, 11); }
 function GoalForm({ goal, onClose }: { goal?: SavingsGoal | null; onClose: () => void }) {
   const { dispatch } = useFinance();
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as Resolver<FormData>,
     defaultValues: { name: goal?.name ?? '', targetAmount: goal?.targetAmount ?? 0, currentAmount: goal?.currentAmount ?? 0, deadline: goal?.deadline?.split('T')[0] ?? '', icon: goal?.icon ?? '🎯' },
   });
   const selectedIcon = watch('icon');

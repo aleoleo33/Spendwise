@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useFinance } from '@/context/FinanceContext';
 import { formatCurrency } from '@/lib/constants';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { EXPENSE_CATEGORIES, CATEGORY_COLORS } from '@/lib/constants';
@@ -12,7 +12,7 @@ import type { Budget } from '@/types';
 
 const schema = z.object({
   category: z.string().min(1),
-  monthlyLimit: z.coerce.number().positive(),
+  monthlyLimit: z.preprocess((v) => Number(v), z.number().positive()),
   month: z.string().min(1),
 });
 type FormData = z.infer<typeof schema>;
@@ -23,9 +23,9 @@ function BudgetForm({ budget, onClose }: { budget?: Budget | null; onClose: () =
   const { dispatch } = useFinance();
   const currentMonth = new Date().toISOString().slice(0, 7);
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as Resolver<FormData>,
     defaultValues: { category: budget?.category ?? '', monthlyLimit: budget?.monthlyLimit ?? 0, month: budget?.month ?? currentMonth },
-  });
+  }); 
   const onSubmit = (data: FormData) => {
     const b: Budget = { id: budget?.id ?? generateId(), ...data, category: data.category as Budget['category'] };
     dispatch({ type: budget ? 'UPDATE_BUDGET' : 'ADD_BUDGET', payload: b });

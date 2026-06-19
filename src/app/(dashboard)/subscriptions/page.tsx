@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useFinance } from '@/context/FinanceContext';
 import { formatCurrency, formatDate, BILLING_CYCLES } from '@/lib/constants';
 import { Plus, Pencil, Trash2, X, RefreshCw } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { Subscription } from '@/types';
@@ -17,7 +17,7 @@ const SERVICE_ICONS: Record<string, string> = {
 
 const schema = z.object({
   serviceName: z.string().min(1),
-  price: z.coerce.number().positive(),
+  price: z.preprocess((v) => Number(v), z.number().positive()),
   billingCycle: z.enum(['Monthly', 'Quarterly', 'Yearly']),
   nextBillingDate: z.string().min(1),
   category: z.string().min(1),
@@ -29,7 +29,7 @@ function generateId() { return Math.random().toString(36).substring(2, 11); }
 function SubForm({ sub, onClose }: { sub?: Subscription | null; onClose: () => void }) {
   const { dispatch } = useFinance();
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as Resolver<FormData>,
     defaultValues: { serviceName: sub?.serviceName ?? '', price: sub?.price ?? 0, billingCycle: sub?.billingCycle ?? 'Monthly', nextBillingDate: sub?.nextBillingDate?.split('T')[0] ?? '', category: sub?.category ?? 'Entertainment' },
   });
   const onSubmit = (data: FormData) => {
